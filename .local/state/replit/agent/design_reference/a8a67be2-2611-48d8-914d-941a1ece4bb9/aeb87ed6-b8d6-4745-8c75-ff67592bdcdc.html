@@ -1,0 +1,1118 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SafeWay AI & Workforce Tracker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+    tailwind.config = {
+        theme: {
+            extend: {
+                borderRadius: {
+                    lg: "var(--radius)",
+                    md: "calc(var(--radius) - 2px)",
+                    sm: "calc(var(--radius) - 4px)",
+                },
+                colors: {
+                    background: "var(--background)",
+                    foreground: "var(--foreground)",
+                    card: {
+                        DEFAULT: "var(--card)",
+                        foreground: "var(--card-foreground)",
+                    },
+                    popover: {
+                        DEFAULT: "var(--popover)",
+                        foreground: "var(--popover-foreground)",
+                    },
+                    primary: {
+                        DEFAULT: "var(--primary)",
+                        foreground: "var(--primary-foreground)",
+                    },
+                    secondary: {
+                        DEFAULT: "var(--secondary)",
+                        foreground: "var(--secondary-foreground)",
+                    },
+                    muted: {
+                        DEFAULT: "var(--muted)",
+                        foreground: "var(--muted-foreground)",
+                    },
+                    accent: {
+                        DEFAULT: "var(--accent)",
+                        foreground: "var(--accent-foreground)",
+                    },
+                    destructive: {
+                        DEFAULT: "var(--destructive)",
+                        foreground: "var(--destructive-foreground)",
+                    },
+                    border: "var(--border)",
+                    input: "var(--input)",
+                    ring: "var(--ring)",
+                    success: "var(--success)",
+                    warning: "var(--warning)",
+                },
+                fontFamily: {
+                    sans: ["Inter", "system-ui", "sans-serif"],
+                    mono: ["JetBrains Mono", "monospace"],
+                }
+            },
+        }
+    };
+    </script>
+    <style>
+        :root {
+            --background: hsl(210 40% 98%);
+            --foreground: hsl(222.2 84% 4.9%);
+            --card: hsl(0 0% 100%);
+            --card-foreground: hsl(222.2 84% 4.9%);
+            --popover: hsl(0 0% 100%);
+            --popover-foreground: hsl(222.2 84% 4.9%);
+            --primary: hsl(210 83% 53%);
+            --primary-foreground: hsl(210 40% 98%);
+            --secondary: hsl(186 100% 35%);
+            --secondary-foreground: hsl(210 40% 98%);
+            --muted: hsl(210 40% 96%);
+            --muted-foreground: hsl(215.4 16.3% 46.9%);
+            --accent: hsl(122 39% 49%);
+            --accent-foreground: hsl(210 40% 98%);
+            --destructive: hsl(0 84.2% 60.2%);
+            --destructive-foreground: hsl(210 40% 98%);
+            --border: hsl(214.3 31.8% 91.4%);
+            --input: hsl(214.3 31.8% 91.4%);
+            --ring: hsl(210 83% 53%);
+            --success: hsl(122 39% 49%);
+            --warning: hsl(43 96% 56%);
+            --radius: 8px;
+        }
+
+        .dark {
+            --background: hsl(222.2 84% 4.9%);
+            --foreground: hsl(210 40% 98%);
+            --card: hsl(222.2 84% 4.9%);
+            --card-foreground: hsl(210 40% 98%);
+            --popover: hsl(222.2 84% 4.9%);
+            --popover-foreground: hsl(210 40% 98%);
+            --primary: hsl(210 83% 53%);
+            --primary-foreground: hsl(222.2 84% 4.9%);
+            --secondary: hsl(217.2 32.6% 17.5%);
+            --secondary-foreground: hsl(210 40% 98%);
+            --muted: hsl(217.2 32.6% 17.5%);
+            --muted-foreground: hsl(215 20.2% 65.1%);
+            --accent: hsl(217.2 32.6% 17.5%);
+            --accent-foreground: hsl(210 40% 98%);
+            --destructive: hsl(0 62.8% 30.6%);
+            --destructive-foreground: hsl(210 40% 98%);
+            --border: hsl(217.2 32.6% 17.5%);
+            --input: hsl(217.2 32.6% 17.5%);
+            --ring: hsl(212.7 26.8% 83.9%);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Inter', system-ui, sans-serif;
+            background-color: var(--background);
+            color: var(--foreground);
+        }
+
+        .fade-in {
+            animation: fadeIn 0.6s ease-in-out;
+        }
+
+        .slide-in-left {
+            animation: slideInLeft 0.4s ease-out;
+        }
+
+        .slide-in-right {
+            animation: slideInRight 0.4s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideInLeft {
+            from { transform: translateX(-100%); }
+            to { transform: translateX(0); }
+        }
+
+        @keyframes slideInRight {
+            from { transform: translateX(100%); }
+            to { transform: translateX(0); }
+        }
+
+        .btn-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s ease;
+        }
+
+        .card-hover:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .map-container {
+            height: 500px;
+            background: linear-gradient(135deg, #e3f2fd 0%, #f1f8e9 100%);
+            border: 2px dashed var(--border);
+            border-radius: var(--radius);
+        }
+
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 8px;
+        }
+
+        .status-online {
+            background-color: var(--success);
+            box-shadow: 0 0 8px rgba(76, 175, 80, 0.3);
+        }
+
+        .status-offline {
+            background-color: var(--muted-foreground);
+        }
+
+        .status-warning {
+            background-color: var(--warning);
+            box-shadow: 0 0 8px rgba(255, 193, 7, 0.3);
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="bg-background text-foreground">
+    <!-- Navigation Header -->
+    <header class="bg-card border-b border-border sticky top-0 z-50 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center space-x-4">
+                    <div class="flex items-center space-x-2">
+                        <div class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+                            <i class="fas fa-route text-primary-foreground text-sm"></i>
+                        </div>
+                        <h1 class="text-xl font-bold text-foreground">SafeWay AI</h1>
+                    </div>
+                </div>
+                
+                <nav class="hidden md:flex space-x-8">
+                    <button class="nav-link text-foreground hover:text-primary transition-colors duration-200 font-medium" onclick="showView('dashboard')">
+                        <i class="fas fa-tachometer-alt mr-2"></i>Dashboard
+                    </button>
+                    <button class="nav-link text-foreground hover:text-primary transition-colors duration-200 font-medium" onclick="showView('routes')">
+                        <i class="fas fa-map-marked-alt mr-2"></i>Route Planning
+                    </button>
+                    <button class="nav-link text-foreground hover:text-primary transition-colors duration-200 font-medium" onclick="showView('workforce')">
+                        <i class="fas fa-users mr-2"></i>Workforce
+                    </button>
+                    <button class="nav-link text-foreground hover:text-primary transition-colors duration-200 font-medium" onclick="showView('geofencing')">
+                        <i class="fas fa-map-pin mr-2"></i>Geofencing
+                    </button>
+                </nav>
+
+                <div class="flex items-center space-x-4">
+                    <button class="relative p-2 text-muted-foreground hover:text-foreground transition-colors">
+                        <i class="fas fa-bell text-lg"></i>
+                        <span class="absolute -top-1 -right-1 bg-destructive text-destructive-foreground text-xs rounded-full px-1.5 py-0.5">3</span>
+                    </button>
+                    <div class="flex items-center space-x-2">
+                        <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=facearea&facepad=2&w=256&h=256" alt="User Avatar" class="w-8 h-8 rounded-full border-2 border-border">
+                        <!-- Professional headshot of a person in business attire -->
+                        <span class="text-sm font-medium hidden sm:block">Admin User</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Dashboard View -->
+        <div id="dashboard-view" class="view-content fade-in">
+            <!-- Stats Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <div class="bg-card rounded-lg border border-border p-6 card-hover">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-muted-foreground">Active Routes</p>
+                            <p class="text-2xl font-bold text-foreground">24</p>
+                            <p class="text-xs text-accent flex items-center mt-1">
+                                <i class="fas fa-arrow-up mr-1"></i>12% from last week
+                            </p>
+                        </div>
+                        <div class="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-route text-primary text-xl"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-card rounded-lg border border-border p-6 card-hover">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-muted-foreground">Online Employees</p>
+                            <p class="text-2xl font-bold text-foreground">156</p>
+                            <p class="text-xs text-accent flex items-center mt-1">
+                                <i class="fas fa-arrow-up mr-1"></i>5% from yesterday
+                            </p>
+                        </div>
+                        <div class="w-12 h-12 bg-accent/10 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-users text-accent text-xl"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-card rounded-lg border border-border p-6 card-hover">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-muted-foreground">Geofence Alerts</p>
+                            <p class="text-2xl font-bold text-foreground">3</p>
+                            <p class="text-xs text-warning flex items-center mt-1">
+                                <i class="fas fa-exclamation-triangle mr-1"></i>Needs attention
+                            </p>
+                        </div>
+                        <div class="w-12 h-12 bg-warning/10 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-exclamation-triangle text-warning text-xl"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-card rounded-lg border border-border p-6 card-hover">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-muted-foreground">Safety Score</p>
+                            <p class="text-2xl font-bold text-foreground">94%</p>
+                            <p class="text-xs text-accent flex items-center mt-1">
+                                <i class="fas fa-shield-alt mr-1"></i>Excellent
+                            </p>
+                        </div>
+                        <div class="w-12 h-12 bg-accent/10 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-shield-alt text-accent text-xl"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                <div class="lg:col-span-2">
+                    <div class="bg-card rounded-lg border border-border p-6">
+                        <h3 class="text-lg font-semibold text-foreground mb-4">Recent Activity</h3>
+                        <div class="space-y-4">
+                            <div class="flex items-center space-x-4 p-3 bg-muted/50 rounded-lg">
+                                <div class="w-10 h-10 bg-accent/10 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-map-marker-alt text-accent"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <p class="text-sm font-medium text-foreground">New route optimized for Team Delta</p>
+                                    <p class="text-xs text-muted-foreground">2 minutes ago</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-4 p-3 bg-muted/50 rounded-lg">
+                                <div class="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-user-check text-primary"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <p class="text-sm font-medium text-foreground">Employee check-in at Mumbai Office</p>
+                                    <p class="text-xs text-muted-foreground">5 minutes ago</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-4 p-3 bg-muted/50 rounded-lg">
+                                <div class="w-10 h-10 bg-warning/10 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-exclamation-circle text-warning"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <p class="text-sm font-medium text-foreground">Geofence violation detected</p>
+                                    <p class="text-xs text-muted-foreground">12 minutes ago</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="space-y-6">
+                    <div class="bg-card rounded-lg border border-border p-6">
+                        <h3 class="text-lg font-semibold text-foreground mb-4">Quick Actions</h3>
+                        <div class="space-y-3">
+                            <button class="w-full bg-primary text-primary-foreground px-4 py-3 rounded-lg font-medium btn-hover flex items-center justify-center space-x-2" onclick="showView('routes')">
+                                <i class="fas fa-plus"></i>
+                                <span>Plan New Route</span>
+                            </button>
+                            <button class="w-full bg-secondary text-secondary-foreground px-4 py-3 rounded-lg font-medium btn-hover flex items-center justify-center space-x-2" onclick="showView('geofencing')">
+                                <i class="fas fa-map-pin"></i>
+                                <span>Create Geofence</span>
+                            </button>
+                            <button class="w-full bg-accent text-accent-foreground px-4 py-3 rounded-lg font-medium btn-hover flex items-center justify-center space-x-2" onclick="showView('workforce')">
+                                <i class="fas fa-users"></i>
+                                <span>View Attendance</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="bg-card rounded-lg border border-border p-6">
+                        <h3 class="text-lg font-semibold text-foreground mb-4">System Status</h3>
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-muted-foreground">MapMyIndia API</span>
+                                <span class="status-indicator status-online"></span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-muted-foreground">Firebase Connection</span>
+                                <span class="status-indicator status-online"></span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-muted-foreground">AI Route Engine</span>
+                                <span class="status-indicator status-online"></span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-muted-foreground">Geofencing Service</span>
+                                <span class="status-indicator status-warning"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Route Planning View -->
+        <div id="routes-view" class="view-content hidden">
+            <div class="fade-in">
+                <div class="mb-6">
+                    <h2 class="text-2xl font-bold text-foreground mb-2">Smart Route Planning</h2>
+                    <p class="text-muted-foreground">Plan optimized routes with AI-powered safety and efficiency analysis</p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Route Planning Form -->
+                    <div class="lg:col-span-1">
+                        <div class="bg-card rounded-lg border border-border p-6 space-y-6">
+                            <h3 class="text-lg font-semibold text-foreground">Route Details</h3>
+                            
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-foreground mb-2">Starting Point</label>
+                                    <div class="relative">
+                                        <input type="text" placeholder="Enter starting location" class="w-full px-4 py-3 bg-input border border-border rounded-lg focus:ring-2 focus:ring-ring focus:border-transparent transition-all duration-200" data-mock="true">
+                                        <i class="fas fa-map-marker-alt absolute right-3 top-3.5 text-muted-foreground"></i>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium text-foreground mb-2">Destination</label>
+                                    <div class="relative">
+                                        <input type="text" placeholder="Enter destination" class="w-full px-4 py-3 bg-input border border-border rounded-lg focus:ring-2 focus:ring-ring focus:border-transparent transition-all duration-200" data-mock="true">
+                                        <i class="fas fa-flag-checkered absolute right-3 top-3.5 text-muted-foreground"></i>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium text-foreground mb-2">Route Preferences</label>
+                                    <div class="space-y-2">
+                                        <label class="flex items-center space-x-2">
+                                            <input type="checkbox" class="w-4 h-4 text-primary border-border rounded focus:ring-ring" checked data-mock="true">
+                                            <span class="text-sm text-foreground">Prioritize safety</span>
+                                        </label>
+                                        <label class="flex items-center space-x-2">
+                                            <input type="checkbox" class="w-4 h-4 text-primary border-border rounded focus:ring-ring" data-mock="true">
+                                            <span class="text-sm text-foreground">Avoid toll roads</span>
+                                        </label>
+                                        <label class="flex items-center space-x-2">
+                                            <input type="checkbox" class="w-4 h-4 text-primary border-border rounded focus:ring-ring" checked data-mock="true">
+                                            <span class="text-sm text-foreground">Fastest route</span>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium text-foreground mb-2">Vehicle Type</label>
+                                    <select class="w-full px-4 py-3 bg-input border border-border rounded-lg focus:ring-2 focus:ring-ring focus:border-transparent transition-all duration-200" data-mock="true">
+                                        <option>Car</option>
+                                        <option>Motorcycle</option>
+                                        <option>Truck</option>
+                                        <option>Bus</option>
+                                    </select>
+                                </div>
+
+                                <button class="w-full bg-primary text-primary-foreground px-4 py-3 rounded-lg font-medium btn-hover flex items-center justify-center space-x-2">
+                                    <i class="fas fa-search"></i>
+                                    <span>Find Best Route</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Route Options -->
+                        <div class="bg-card rounded-lg border border-border p-6 mt-6">
+                            <h3 class="text-lg font-semibold text-foreground mb-4">Route Options</h3>
+                            <div class="space-y-3">
+                                <div class="p-3 border border-primary rounded-lg bg-primary/5 cursor-pointer">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span class="font-medium text-foreground">Recommended Route</span>
+                                        <span class="bg-primary text-primary-foreground px-2 py-1 text-xs rounded">SAFEST</span>
+                                    </div>
+                                    <div class="text-sm text-muted-foreground">
+                                        <p>Distance: 24.5 km • Time: 32 mins</p>
+                                        <p>Safety Score: 95%</p>
+                                    </div>
+                                </div>
+
+                                <div class="p-3 border border-border rounded-lg cursor-pointer hover:bg-muted/50 transition-colors">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span class="font-medium text-foreground">Fastest Route</span>
+                                        <span class="bg-secondary text-secondary-foreground px-2 py-1 text-xs rounded">FASTEST</span>
+                                    </div>
+                                    <div class="text-sm text-muted-foreground">
+                                        <p>Distance: 22.1 km • Time: 28 mins</p>
+                                        <p>Safety Score: 87%</p>
+                                    </div>
+                                </div>
+
+                                <div class="p-3 border border-border rounded-lg cursor-pointer hover:bg-muted/50 transition-colors">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span class="font-medium text-foreground">Scenic Route</span>
+                                        <span class="bg-accent text-accent-foreground px-2 py-1 text-xs rounded">SCENIC</span>
+                                    </div>
+                                    <div class="text-sm text-muted-foreground">
+                                        <p>Distance: 28.7 km • Time: 38 mins</p>
+                                        <p>Safety Score: 92%</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Interactive Map -->
+                    <div class="lg:col-span-2">
+                        <div class="bg-card rounded-lg border border-border p-6">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-lg font-semibold text-foreground">Interactive Map</h3>
+                                <div class="flex items-center space-x-2">
+                                    <button class="px-3 py-1 text-sm bg-muted text-muted-foreground rounded hover:bg-muted/80 transition-colors">
+                                        <i class="fas fa-expand mr-1"></i>Fullscreen
+                                    </button>
+                                    <button class="px-3 py-1 text-sm bg-muted text-muted-foreground rounded hover:bg-muted/80 transition-colors">
+                                        <i class="fas fa-layer-group mr-1"></i>Layers
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- MapMyIndia Integration Placeholder -->
+                            <div class="map-container flex items-center justify-center">
+                                <div class="text-center">
+                                    <i class="fas fa-map text-4xl text-muted-foreground mb-4"></i>
+                                    <h4 class="text-lg font-medium text-foreground mb-2">MapMyIndia Interactive Map</h4>
+                                    <p class="text-muted-foreground mb-4">Real-time route visualization with safety indicators</p>
+                                    <div class="bg-primary/10 border border-primary/20 rounded-lg p-4 max-w-md mx-auto">
+                                        <p class="text-sm text-primary">
+                                            <!-- @INTEGRATION: MapMyIndia API -->
+                                            Integration point for MapMyIndia maps API with route visualization, markers, and geofencing overlays
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Map Legend -->
+                            <div class="mt-4 flex flex-wrap gap-4 text-sm">
+                                <div class="flex items-center space-x-2">
+                                    <div class="w-3 h-3 bg-primary rounded-full"></div>
+                                    <span class="text-muted-foreground">Recommended Route</span>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <div class="w-3 h-3 bg-secondary rounded-full"></div>
+                                    <span class="text-muted-foreground">Alternative Routes</span>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <div class="w-3 h-3 bg-warning rounded-full"></div>
+                                    <span class="text-muted-foreground">Safety Alerts</span>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <div class="w-3 h-3 bg-accent rounded-full"></div>
+                                    <span class="text-muted-foreground">Geofence Zones</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Workforce Management View -->
+        <div id="workforce-view" class="view-content hidden">
+            <div class="fade-in">
+                <div class="mb-6">
+                    <h2 class="text-2xl font-bold text-foreground mb-2">Workforce Management</h2>
+                    <p class="text-muted-foreground">Monitor employee attendance and location tracking</p>
+                </div>
+
+                <!-- Workforce Stats -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                    <div class="bg-card rounded-lg border border-border p-6">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-12 h-12 bg-accent/10 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-user-check text-accent text-xl"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm text-muted-foreground">Present Today</p>
+                                <p class="text-2xl font-bold text-foreground">142</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-card rounded-lg border border-border p-6">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-12 h-12 bg-warning/10 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-user-clock text-warning text-xl"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm text-muted-foreground">Late Arrivals</p>
+                                <p class="text-2xl font-bold text-foreground">8</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-card rounded-lg border border-border p-6">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-12 h-12 bg-destructive/10 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-user-times text-destructive text-xl"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm text-muted-foreground">Absent</p>
+                                <p class="text-2xl font-bold text-foreground">14</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-card rounded-lg border border-border p-6">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-map-marker-alt text-primary text-xl"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm text-muted-foreground">On Field</p>
+                                <p class="text-2xl font-bold text-foreground">67</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Employee List and Map -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <!-- Employee List -->
+                    <div class="bg-card rounded-lg border border-border p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-lg font-semibold text-foreground">Employee Status</h3>
+                            <div class="flex items-center space-x-2">
+                                <input type="text" placeholder="Search employees..." class="px-3 py-2 text-sm bg-input border border-border rounded-lg focus:ring-2 focus:ring-ring focus:border-transparent" data-mock="true">
+                                <button class="px-3 py-2 bg-muted text-muted-foreground rounded-lg hover:bg-muted/80 transition-colors">
+                                    <i class="fas fa-filter"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="space-y-3 max-h-96 overflow-y-auto">
+                            <!-- Employee Card 1 -->
+                            <div class="flex items-center space-x-4 p-3 bg-muted/30 rounded-lg">
+                                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=facearea&facepad=2&w=256&h=256" alt="Employee Avatar" class="w-10 h-10 rounded-full border-2 border-border">
+                                <!-- Professional headshot of a male employee -->
+                                <div class="flex-1">
+                                    <div class="flex items-center space-x-2">
+                                        <span class="font-medium text-foreground" data-bind="employee.name">Rajesh Kumar</span>
+                                        <span class="status-indicator status-online"></span>
+                                    </div>
+                                    <p class="text-sm text-muted-foreground">ID: EMP001 • Software Engineer</p>
+                                    <p class="text-xs text-muted-foreground">Checked in: 9:15 AM • Mumbai Office</p>
+                                </div>
+                                <button class="text-primary hover:text-primary/80 transition-colors">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                </button>
+                            </div>
+
+                            <!-- Employee Card 2 -->
+                            <div class="flex items-center space-x-4 p-3 bg-muted/30 rounded-lg">
+                                <img src="https://pixabay.com/get/geceb77c2fd1837b74d9e55802894e9d0a7205049f31d7c035d5f85c0d6c7f862d59872e1a921512472cc324ef8bb2c7df892b82d5a5ada0f1305fef4a05c2c13_1280.jpg" alt="Employee Avatar" class="w-10 h-10 rounded-full border-2 border-border">
+                                <!-- Professional headshot of a female employee -->
+                                <div class="flex-1">
+                                    <div class="flex items-center space-x-2">
+                                        <span class="font-medium text-foreground" data-bind="employee.name">Priya Sharma</span>
+                                        <span class="status-indicator status-warning"></span>
+                                    </div>
+                                    <p class="text-sm text-muted-foreground">ID: EMP002 • Project Manager</p>
+                                    <p class="text-xs text-warning">Late arrival: 9:45 AM • Delhi Office</p>
+                                </div>
+                                <button class="text-primary hover:text-primary/80 transition-colors">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                </button>
+                            </div>
+
+                            <!-- Employee Card 3 -->
+                            <div class="flex items-center space-x-4 p-3 bg-muted/30 rounded-lg">
+                                <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=facearea&facepad=2&w=256&h=256" alt="Employee Avatar" class="w-10 h-10 rounded-full border-2 border-border">
+                                <!-- Professional headshot of another male employee -->
+                                <div class="flex-1">
+                                    <div class="flex items-center space-x-2">
+                                        <span class="font-medium text-foreground" data-bind="employee.name">Arjun Patel</span>
+                                        <span class="status-indicator status-online"></span>
+                                    </div>
+                                    <p class="text-sm text-muted-foreground">ID: EMP003 • Field Engineer</p>
+                                    <p class="text-xs text-accent">On field: Site A • Bangalore</p>
+                                </div>
+                                <button class="text-primary hover:text-primary/80 transition-colors">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                </button>
+                            </div>
+
+                            <!-- Employee Card 4 -->
+                            <div class="flex items-center space-x-4 p-3 bg-muted/30 rounded-lg">
+                                <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=facearea&facepad=2&w=256&h=256" alt="Employee Avatar" class="w-10 h-10 rounded-full border-2 border-border">
+                                <!-- Professional headshot of another female employee -->
+                                <div class="flex-1">
+                                    <div class="flex items-center space-x-2">
+                                        <span class="font-medium text-foreground" data-bind="employee.name">Anita Singh</span>
+                                        <span class="status-indicator status-offline"></span>
+                                    </div>
+                                    <p class="text-sm text-muted-foreground">ID: EMP004 • HR Manager</p>
+                                    <p class="text-xs text-muted-foreground">Absent today</p>
+                                </div>
+                                <button class="text-muted-foreground">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                </button>
+                            </div>
+
+                            <!-- Employee Card 5 -->
+                            <div class="flex items-center space-x-4 p-3 bg-muted/30 rounded-lg">
+                                <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=facearea&facepad=2&w=256&h=256" alt="Employee Avatar" class="w-10 h-10 rounded-full border-2 border-border">
+                                <!-- Professional headshot of a third male employee -->
+                                <div class="flex-1">
+                                    <div class="flex items-center space-x-2">
+                                        <span class="font-medium text-foreground" data-bind="employee.name">Vikram Joshi</span>
+                                        <span class="status-indicator status-online"></span>
+                                    </div>
+                                    <p class="text-sm text-muted-foreground">ID: EMP005 • Sales Executive</p>
+                                    <p class="text-xs text-muted-foreground">Checked in: 8:30 AM • Pune Office</p>
+                                </div>
+                                <button class="text-primary hover:text-primary/80 transition-colors">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Location Map -->
+                    <div class="bg-card rounded-lg border border-border p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-lg font-semibold text-foreground">Employee Locations</h3>
+                            <button class="px-3 py-1 text-sm bg-primary text-primary-foreground rounded hover:bg-primary/90 transition-colors">
+                                <i class="fas fa-sync mr-1"></i>Refresh
+                            </button>
+                        </div>
+
+                        <!-- Location Map Placeholder -->
+                        <div class="map-container flex items-center justify-center">
+                            <div class="text-center">
+                                <i class="fas fa-users-cog text-4xl text-muted-foreground mb-4"></i>
+                                <h4 class="text-lg font-medium text-foreground mb-2">Real-time Employee Tracking</h4>
+                                <p class="text-muted-foreground mb-4">Live locations and geofence monitoring</p>
+                                <div class="bg-accent/10 border border-accent/20 rounded-lg p-4 max-w-md mx-auto">
+                                    <p class="text-sm text-accent">
+                                        <!-- @INTEGRATION: Employee location tracking with MapMyIndia -->
+                                        Real-time employee location pins with geofence boundaries and attendance status
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Quick Actions -->
+                        <div class="mt-4 flex space-x-2">
+                            <button class="flex-1 px-3 py-2 text-sm bg-secondary text-secondary-foreground rounded hover:bg-secondary/90 transition-colors">
+                                Export Report
+                            </button>
+                            <button class="flex-1 px-3 py-2 text-sm bg-muted text-muted-foreground rounded hover:bg-muted/80 transition-colors">
+                                Send Alert
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Geofencing Management View -->
+        <div id="geofencing-view" class="view-content hidden">
+            <div class="fade-in">
+                <div class="mb-6">
+                    <h2 class="text-2xl font-bold text-foreground mb-2">Geofencing Management</h2>
+                    <p class="text-muted-foreground">Create and manage geofenced zones for workforce tracking</p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Geofence Creation Panel -->
+                    <div class="lg:col-span-1">
+                        <div class="bg-card rounded-lg border border-border p-6 space-y-6">
+                            <h3 class="text-lg font-semibold text-foreground">Create Geofence</h3>
+                            
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-foreground mb-2">Zone Name</label>
+                                    <input type="text" placeholder="e.g., Mumbai Office Main" class="w-full px-4 py-3 bg-input border border-border rounded-lg focus:ring-2 focus:ring-ring focus:border-transparent transition-all duration-200" data-mock="true">
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium text-foreground mb-2">Zone Type</label>
+                                    <select class="w-full px-4 py-3 bg-input border border-border rounded-lg focus:ring-2 focus:ring-ring focus:border-transparent transition-all duration-200" data-mock="true">
+                                        <option>Office Zone</option>
+                                        <option>Project Site</option>
+                                        <option>Restricted Area</option>
+                                        <option>Client Location</option>
+                                    </select>
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium text-foreground mb-2">Center Location</label>
+                                    <div class="relative">
+                                        <input type="text" placeholder="Search or click on map" class="w-full px-4 py-3 bg-input border border-border rounded-lg focus:ring-2 focus:ring-ring focus:border-transparent transition-all duration-200" data-mock="true">
+                                        <i class="fas fa-crosshairs absolute right-3 top-3.5 text-muted-foreground"></i>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium text-foreground mb-2">Radius (meters)</label>
+                                    <input type="range" min="50" max="1000" value="200" class="w-full h-2 bg-muted rounded-lg appearance-none cursor-pointer" data-mock="true">
+                                    <div class="flex justify-between text-sm text-muted-foreground mt-1">
+                                        <span>50m</span>
+                                        <span class="font-medium text-primary">200m</span>
+                                        <span>1000m</span>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium text-foreground mb-2">Active Hours</label>
+                                    <div class="grid grid-cols-2 gap-2">
+                                        <div>
+                                            <label class="block text-xs text-muted-foreground mb-1">Start Time</label>
+                                            <input type="time" value="09:00" class="w-full px-3 py-2 text-sm bg-input border border-border rounded focus:ring-2 focus:ring-ring focus:border-transparent" data-mock="true">
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs text-muted-foreground mb-1">End Time</label>
+                                            <input type="time" value="18:00" class="w-full px-3 py-2 text-sm bg-input border border-border rounded focus:ring-2 focus:ring-ring focus:border-transparent" data-mock="true">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium text-foreground mb-2">Alert Settings</label>
+                                    <div class="space-y-2">
+                                        <label class="flex items-center space-x-2">
+                                            <input type="checkbox" class="w-4 h-4 text-primary border-border rounded focus:ring-ring" checked data-mock="true">
+                                            <span class="text-sm text-foreground">Entry notifications</span>
+                                        </label>
+                                        <label class="flex items-center space-x-2">
+                                            <input type="checkbox" class="w-4 h-4 text-primary border-border rounded focus:ring-ring" checked data-mock="true">
+                                            <span class="text-sm text-foreground">Exit notifications</span>
+                                        </label>
+                                        <label class="flex items-center space-x-2">
+                                            <input type="checkbox" class="w-4 h-4 text-primary border-border rounded focus:ring-ring" data-mock="true">
+                                            <span class="text-sm text-foreground">Violation alerts</span>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <button class="w-full bg-primary text-primary-foreground px-4 py-3 rounded-lg font-medium btn-hover flex items-center justify-center space-x-2">
+                                    <i class="fas fa-plus"></i>
+                                    <span>Create Geofence</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Existing Geofences -->
+                        <div class="bg-card rounded-lg border border-border p-6 mt-6">
+                            <h3 class="text-lg font-semibold text-foreground mb-4">Active Geofences</h3>
+                            <div class="space-y-3">
+                                <div class="p-3 border border-border rounded-lg hover:bg-muted/50 transition-colors cursor-pointer">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span class="font-medium text-foreground">Mumbai Office Main</span>
+                                        <span class="status-indicator status-online"></span>
+                                    </div>
+                                    <div class="text-sm text-muted-foreground">
+                                        <p>Radius: 150m • 23 employees tracked</p>
+                                        <p>Active: 09:00 - 18:00</p>
+                                    </div>
+                                </div>
+
+                                <div class="p-3 border border-border rounded-lg hover:bg-muted/50 transition-colors cursor-pointer">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span class="font-medium text-foreground">Project Site Alpha</span>
+                                        <span class="status-indicator status-online"></span>
+                                    </div>
+                                    <div class="text-sm text-muted-foreground">
+                                        <p>Radius: 300m • 12 employees tracked</p>
+                                        <p>Active: 08:00 - 17:00</p>
+                                    </div>
+                                </div>
+
+                                <div class="p-3 border border-border rounded-lg hover:bg-muted/50 transition-colors cursor-pointer">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span class="font-medium text-foreground">Delhi Branch</span>
+                                        <span class="status-indicator status-warning"></span>
+                                    </div>
+                                    <div class="text-sm text-muted-foreground">
+                                        <p>Radius: 200m • 8 employees tracked</p>
+                                        <p>Issue: GPS signal weak</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Map and Analytics -->
+                    <div class="lg:col-span-2 space-y-6">
+                        <!-- Geofence Map -->
+                        <div class="bg-card rounded-lg border border-border p-6">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-lg font-semibold text-foreground">Geofence Map</h3>
+                                <div class="flex items-center space-x-2">
+                                    <button class="px-3 py-1 text-sm bg-muted text-muted-foreground rounded hover:bg-muted/80 transition-colors">
+                                        <i class="fas fa-draw-polygon mr-1"></i>Draw Zone
+                                    </button>
+                                    <button class="px-3 py-1 text-sm bg-muted text-muted-foreground rounded hover:bg-muted/80 transition-colors">
+                                        <i class="fas fa-eye mr-1"></i>Toggle View
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- Geofencing Map Placeholder -->
+                            <div class="map-container flex items-center justify-center">
+                                <div class="text-center">
+                                    <i class="fas fa-map-pin text-4xl text-muted-foreground mb-4"></i>
+                                    <h4 class="text-lg font-medium text-foreground mb-2">Interactive Geofence Editor</h4>
+                                    <p class="text-muted-foreground mb-4">Click and drag to create zones</p>
+                                    <div class="bg-secondary/10 border border-secondary/20 rounded-lg p-4 max-w-md mx-auto">
+                                        <p class="text-sm text-secondary">
+                                            <!-- @INTEGRATION: Geofence creation with MapMyIndia -->
+                                            Interactive map for drawing geofence boundaries with real-time preview
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Geofence Analytics -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="bg-card rounded-lg border border-border p-6">
+                                <h3 class="text-lg font-semibold text-foreground mb-4">Zone Activity</h3>
+                                <div class="space-y-4">
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-sm text-muted-foreground">Total Entries Today</span>
+                                        <span class="font-bold text-xl text-foreground">156</span>
+                                    </div>
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-sm text-muted-foreground">Total Exits Today</span>
+                                        <span class="font-bold text-xl text-foreground">142</span>
+                                    </div>
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-sm text-muted-foreground">Currently Inside</span>
+                                        <span class="font-bold text-xl text-accent">14</span>
+                                    </div>
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-sm text-muted-foreground">Violations</span>
+                                        <span class="font-bold text-xl text-warning">3</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="bg-card rounded-lg border border-border p-6">
+                                <h3 class="text-lg font-semibold text-foreground mb-4">Recent Alerts</h3>
+                                <div class="space-y-3">
+                                    <div class="flex items-start space-x-3 p-2 bg-warning/10 rounded-lg">
+                                        <i class="fas fa-exclamation-triangle text-warning mt-1"></i>
+                                        <div class="flex-1">
+                                            <p class="text-sm font-medium text-foreground">Unauthorized Exit</p>
+                                            <p class="text-xs text-muted-foreground">EMP003 left Project Site Alpha at 2:30 PM</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-start space-x-3 p-2 bg-accent/10 rounded-lg">
+                                        <i class="fas fa-check-circle text-accent mt-1"></i>
+                                        <div class="flex-1">
+                                            <p class="text-sm font-medium text-foreground">Zone Entry</p>
+                                            <p class="text-xs text-muted-foreground">EMP001 entered Mumbai Office at 9:15 AM</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-start space-x-3 p-2 bg-primary/10 rounded-lg">
+                                        <i class="fas fa-info-circle text-primary mt-1"></i>
+                                        <div class="flex-1">
+                                            <p class="text-sm font-medium text-foreground">System Update</p>
+                                            <p class="text-xs text-muted-foreground">Geofence 'Delhi Branch' updated successfully</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Mobile Navigation Menu (Hidden by default) -->
+    <div id="mobile-menu" class="md:hidden fixed inset-0 z-50 bg-background/80 backdrop-blur-sm hidden">
+        <div class="fixed inset-y-0 left-0 w-64 bg-card border-r border-border shadow-lg slide-in-left">
+            <div class="p-6">
+                <div class="flex items-center space-x-2 mb-8">
+                    <div class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+                        <i class="fas fa-route text-primary-foreground text-sm"></i>
+                    </div>
+                    <h1 class="text-xl font-bold text-foreground">SafeWay AI</h1>
+                </div>
+                
+                <nav class="space-y-4">
+                    <button class="w-full text-left px-4 py-3 text-foreground hover:bg-muted rounded-lg transition-colors duration-200 font-medium" onclick="showView('dashboard'); hideMobileMenu()">
+                        <i class="fas fa-tachometer-alt mr-3"></i>Dashboard
+                    </button>
+                    <button class="w-full text-left px-4 py-3 text-foreground hover:bg-muted rounded-lg transition-colors duration-200 font-medium" onclick="showView('routes'); hideMobileMenu()">
+                        <i class="fas fa-map-marked-alt mr-3"></i>Route Planning
+                    </button>
+                    <button class="w-full text-left px-4 py-3 text-foreground hover:bg-muted rounded-lg transition-colors duration-200 font-medium" onclick="showView('workforce'); hideMobileMenu()">
+                        <i class="fas fa-users mr-3"></i>Workforce
+                    </button>
+                    <button class="w-full text-left px-4 py-3 text-foreground hover:bg-muted rounded-lg transition-colors duration-200 font-medium" onclick="showView('geofencing'); hideMobileMenu()">
+                        <i class="fas fa-map-pin mr-3"></i>Geofencing
+                    </button>
+                </nav>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Menu Toggle Button -->
+    <button id="mobile-menu-toggle" class="md:hidden fixed bottom-6 right-6 w-14 h-14 bg-primary text-primary-foreground rounded-full shadow-lg flex items-center justify-center z-40 btn-hover">
+        <i class="fas fa-bars text-xl"></i>
+    </button>
+
+    <script>
+        (function() {
+            // View Management
+            let currentView = 'dashboard';
+
+            window.showView = function(viewName) {
+                // Hide all views
+                const views = document.querySelectorAll('.view-content');
+                views.forEach(view => {
+                    view.classList.add('hidden');
+                });
+
+                // Show selected view
+                const targetView = document.getElementById(viewName + '-view');
+                if (targetView) {
+                    targetView.classList.remove('hidden');
+                    currentView = viewName;
+                    
+                    // Update navigation active state
+                    updateNavigationState(viewName);
+                    
+                    // Trigger fade-in animation
+                    setTimeout(() => {
+                        const content = targetView.querySelector('.fade-in');
+                        if (content) {
+                            content.style.animation = 'none';
+                            content.offsetHeight; // Trigger reflow
+                            content.style.animation = 'fadeIn 0.6s ease-in-out';
+                        }
+                    }, 10);
+                }
+            };
+
+            function updateNavigationState(activeView) {
+                const navLinks = document.querySelectorAll('.nav-link');
+                navLinks.forEach(link => {
+                    link.classList.remove('text-primary');
+                    link.classList.add('text-foreground');
+                });
+
+                // Add active state to current view
+                const activeLink = document.querySelector(`[onclick*="${activeView}"]`);
+                if (activeLink) {
+                    activeLink.classList.remove('text-foreground');
+                    activeLink.classList.add('text-primary');
+                }
+            }
+
+            // Mobile Menu Management
+            window.showMobileMenu = function() {
+                const mobileMenu = document.getElementById('mobile-menu');
+                mobileMenu.classList.remove('hidden');
+            };
+
+            window.hideMobileMenu = function() {
+                const mobileMenu = document.getElementById('mobile-menu');
+                mobileMenu.classList.add('hidden');
+            };
+
+            // Initialize mobile menu toggle
+            document.addEventListener('DOMContentLoaded', function() {
+                const mobileToggle = document.getElementById('mobile-menu-toggle');
+                const mobileMenu = document.getElementById('mobile-menu');
+                
+                mobileToggle.addEventListener('click', function() {
+                    if (mobileMenu.classList.contains('hidden')) {
+                        showMobileMenu();
+                    } else {
+                        hideMobileMenu();
+                    }
+                });
+
+                // Close mobile menu when clicking outside
+                mobileMenu.addEventListener('click', function(e) {
+                    if (e.target === mobileMenu) {
+                        hideMobileMenu();
+                    }
+                });
+
+                // Initialize navigation state
+                updateNavigationState(currentView);
+            });
+
+            // Simulated real-time updates
+            function simulateRealTimeUpdates() {
+                // TODO: Implement Firebase real-time listeners for:
+                // - Employee check-ins/check-outs
+                // - Geofence violations
+                // - Route updates
+                // - System status changes
+                
+                // Placeholder for demonstration
+                setInterval(() => {
+                    console.log('Real-time update simulation...');
+                    // Update UI elements with new data
+                }, 30000);
+            }
+
+            // Initialize application
+            document.addEventListener('DOMContentLoaded', function() {
+                // TODO: Initialize Firebase connection
+                // TODO: Load user preferences
+                // TODO: Set up MapMyIndia API
+                // TODO: Initialize geofencing service
+                
+                simulateRealTimeUpdates();
+                
+                // Show initial view
+                showView('dashboard');
+                
+                console.log('SafeWay AI & Workforce Tracker initialized');
+            });
+
+            // Responsive design helpers
+            function handleResize() {
+                const mobileMenu = document.getElementById('mobile-menu');
+                if (window.innerWidth >= 768) {
+                    hideMobileMenu();
+                }
+            }
+
+            window.addEventListener('resize', handleResize);
+        })();
+    </script>
+</body>
+</html>
